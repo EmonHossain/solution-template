@@ -1,6 +1,8 @@
 package com.tigerit.exam;
 
 
+import com.tigerit.exam.input.ReadData;
+
 import static com.tigerit.exam.IO.*;
 
 /**
@@ -15,12 +17,16 @@ public class Solution implements Runnable {
         // your application entry point
 
         // sample input process
-        String string = readLine();
+        //String string = readLine();
 
-        Integer integer = readLineAsInteger();
+        //Integer integer = readLineAsInteger();
+
+        new ReadData().setDataForTest();
+
+
 
         // sample output process
-        printLine(string);
-        printLine(integer);
+        //printLine(string);
+        //printLine(integer);
     }
 }
