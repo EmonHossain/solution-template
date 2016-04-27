@@ -2,7 +2,9 @@ package com.tigerit.exam;
 
 
 import com.tigerit.exam.input.ReadData;
+import com.tigerit.exam.utils.ColumnMapper;
 import com.tigerit.exam.utils.QueryAnalyzer;
+import com.tigerit.exam.utils.TableNameReplacer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,114 +44,90 @@ public class Solution implements Runnable {
 
         new ReadData().setDataForTest();
 
-
+        TableNameReplacer replacer = new TableNameReplacer();
 
         for (int i=0;i<ReadData.listOfQueries.size();i++){
 
+            //System.out.println(ReadData.listOfQueries.size());
+
             query = ReadData.listOfQueries.get(i);
-            List<String> analyzedDataForSelect = queryAnalyzer.analyzeQuery(query[0],null);
-            if (analyzedDataForSelect.size()==1 && analyzedDataForSelect.contains("*")){
-                List<String> analyzedData = queryAnalyzer.analyzeQuery(query[0],null);
-                if(analyzedData.size()==1 && analyzedData.contains("*")){
-                    allColumn = true;
-                }
-                dataOrganizer(analyzedData);
+            System.out.println("size of query : "+ReadData.listOfQueries.size());
+            List<String> analyzedDataForSelect = queryAnalyzer.analyzeQuery(query[0],",");
+            System.out.println("elements of query select : "+analyzedDataForSelect);
+
+            List<String> analyzedDataForFrom = queryAnalyzer.analyzeQuery(query[1]," ");
+
+            List<String> analyzedDataForJoin = queryAnalyzer.analyzeQuery(query[2]," ");
+
+            List<String> analyzedDataForJoinOn = queryAnalyzer.analyzeQuery(query[3],"=");
+
+
+
+            if(analyzedDataForFrom.size()==1){
+                firstTableName = analyzedDataForFrom.get(0);
+            }else {
+                firstTableName = analyzedDataForFrom.get(0);
+                firstTableShortName = analyzedDataForFrom.get(1);
+                findTableNameByShortName.put(firstTableShortName,firstTableName);
+
+                System.out.println(firstTableName+" "+firstTableShortName);
             }
 
 
-            else {
 
-                List<String> analyzedData = queryAnalyzer.analyzeQuery(query[0],",");
-                for (int k=0;k<analyzedData.size();k++){
-                    if(analyzedData.get(k)!=null || analyzedData.get(k).isEmpty())
-                        columnNamesForQuery.add(analyzedData.get(k));
-                    //columnNamesForQuery[k]=queryAnalyzer.replaceByTableName(columnNamesForQuery[k]);
-                }
-                dataOrganizer(analyzedData);
+            if(analyzedDataForJoin.size()==1){
+                secondTableName = analyzedDataForJoin.get(0);
+            }else {
+                secondTableName = analyzedDataForJoin.get(0);
+                secondTableShortName = analyzedDataForJoin.get(1);
+                findTableNameByShortName.put(secondTableShortName,secondTableName);
 
+                System.out.println(secondTableName+" "+secondTableShortName);
             }
 
+
+            if(analyzedDataForSelect.size()>1 && firstTableShortName!=null){
+                int index=0;
+                for (String str : analyzedDataForSelect) {
+                    analyzedDataForSelect.set(index, replacer.replaceTableShortNameByTableName(str, firstTableName,secondTableName, firstTableShortName,secondTableShortName));
+                    index++;
+                }
+            }
+
+            //print replaced value
+            if(analyzedDataForSelect.size()>1) {
+                for (String str : analyzedDataForSelect) {
+                    System.out.println("replaced select value : " + str);
+                }
+            }
+
+
+            if (analyzedDataForJoinOn.size()>1 && firstTableShortName!=null){
+                int index=0;
+                for (String str : analyzedDataForJoinOn){
+                    analyzedDataForJoinOn.set(index, replacer.replaceTableShortNameByTableName(str, firstTableName,secondTableName, firstTableShortName,secondTableShortName));
+                    index++;
+                }
+            }
+
+            //print replaced value
+            for (String str : analyzedDataForJoinOn){
+                System.out.println("replaced join on value : "+str);
+            }
+
+            ColumnMapper columnMapper = new ColumnMapper();
+            columnMapper.mapColumNameWithValue();
+
+
+            JoinTable joinTable = new JoinTable();
+            if(analyzedDataForSelect.size()==1 && analyzedDataForSelect.get(0).equals("*"))
+                joinTable.joinTwoTableForAllColumn(analyzedDataForJoinOn);
+            else
+                joinTable.joinTwoTableForSpechificColumn(analyzedDataForSelect,analyzedDataForJoinOn);
 
 
 
         }
 
-        int[][] tab = ReadData.tablesName.get(firstTableName);
-        System.out.println(firstTableName);
-        for(int i = 0;i<(int)ReadData.numberOfRecordFortable.get(firstTableName);i++){
-            for(int k=0;k<(int)ReadData.numberOfRecordFortable.get(firstTableName);k++){
-                System.out.print(tab[i][k]+ " ");
-            }
-            System.out.println();
-        }
-
-        tab = ReadData.tablesName.get(secondTableName);
-        System.out.println(secondTableName);
-        for(int i = 0;i<(int)ReadData.numberOfRecordFortable.get(secondTableName);i++){
-            for(int k=0;k<(int)ReadData.numberOfRecordFortable.get(secondTableName);k++){
-                System.out.print(tab[i][k]+ " ");
-            }
-            System.out.println();
-        }
-        System.out.println("query column");
-
-        for (int i=0;i<columnNamesForQuery.size();i++){
-            System.out.println(columnNamesForQuery.size());
-            /*if(i==0){
-                String[] a = queryAnalyzer.analyzeQuery(columnNamesForQuery[i]," ");
-                columnNamesForQuery[i]=a[1].replaceAll("\\s"," ");
-            }
-
-            System.out.println(columnNamesForQuery[i]);*/
-        }
-
-        System.out.println("join");
-
-        for (int i=0;i<joinColumns.length;i++){
-            System.out.println(columnNamesForQuery.get(i).toString());
-        }
-
-
-        // sample output process
-        //printLine(string);
-        //printLine(integer);
-    }
-
-    public void dataOrganizer(List<String> analyzedData){
-        for (int j=1;j<4;j++){
-
-            if(j==1){
-                analyzedData = queryAnalyzer.analyzeQuery(query[j],null);
-                if(analyzedData.size()==1){
-                    firstTableName = analyzedData.get(0);
-                }
-                else {
-                    firstTableName = analyzedData.get(0);
-                    firstTableShortName = analyzedData.get(1);
-                    findTableNameByShortName.put(firstTableShortName,firstTableName);
-                }
-            }
-            else if(j==2){
-                analyzedData = queryAnalyzer.analyzeQuery(query[j],null);
-                if(analyzedData.size()==1)
-                    secondTableName = analyzedData.get(0);
-                else {
-                    secondTableName = analyzedData.get(0);
-                    secondTableShortName = analyzedData.get(1);
-                    findTableNameByShortName.put(secondTableShortName,secondTableName);
-                }
-            }
-            else if(j==3){
-                analyzedData = queryAnalyzer.analyzeQuery(query[j],"=");
-                joinColumns[0]=analyzedData.get(0);
-                joinColumns[1]=analyzedData.get(1);
-                if(firstTableShortName!=null){
-                    /*joinColumns[0]=queryAnalyzer.replaceByTableName(joinColumns[0]);
-                    joinColumns[1]=queryAnalyzer.replaceByTableName(joinColumns[1]);*/
-                }
-
-            }
-
-        }
     }
 }

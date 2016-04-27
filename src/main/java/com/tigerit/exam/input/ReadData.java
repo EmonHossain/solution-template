@@ -13,16 +13,16 @@ import java.util.Map;
  */
 public class ReadData {
 
-    public  int testCase = 0;
+    public int testCase = 0;
     public int tableNumber = 0;
     public String tableName;
     public int numberOfColumn;
     public int numberOfRecord;
-    public String[] columnNames = new String[110];
+
 
 
     public static HashMap<String,int[][]> tablesName = new HashMap<>();
-    public static HashMap<String,String[]> tableColumnsName = new HashMap<>();
+    public static HashMap<String,List<String>> tableColumnsName = new HashMap<>();
     public static HashMap<String,Integer> numberOfRecordFortable = new HashMap<>();
     public static HashMap<String,Integer> numberOfColumnFortable = new HashMap<>();
     public List<int[][]> listOfTable = new ArrayList<>();
@@ -41,8 +41,10 @@ public class ReadData {
                 tableName = IO.readLine();
                 numberOfColumn = IO.readLineAsInteger();
                 numberOfRecord=IO.readLineAsInteger();
+                List<String> columnNames = new ArrayList<>();
                 for(int k=0;k<numberOfColumn;k++){
-                    columnNames[k]=IO.readLine();
+                    String colName = IO.readLine();
+                    columnNames.add(colName);
                 }
 
                 int[][] table = new int[100][110];
@@ -58,11 +60,36 @@ public class ReadData {
                 numberOfColumnFortable.put(tableName.toString(),numberOfColumn);
             }
             numberOfQueries = IO.readLineAsInteger();
-            String[] query = new String[4];
+
             for (int n = 0;n<numberOfQueries;n++){
+                String[] query = new String[4];
                 for(int q=0;q<4;q++){
                     query[q] = IO.readLine();
+                    query[q]= query[q].toLowerCase();
+                    //System.out.println(query[q]);
+                    if(q==0 && query[q].contains("select")){
+                        query[q] = query[q].replace("select","");
+                        query[q] = query[q].replaceAll("\\s","");
+                        System.out.println(query[q]);
+                    }
+                    if(q==1 && query[q].contains("from")){
+                        query[q]=query[q].replace("from","");
+                        query[q] = query[q].replaceFirst("\\s","");
+                        System.out.println(query[q]);
+                    }
+                    if(q==2 && query[q].contains("join")){
+                        query[q]=query[q].replace("join","");
+                        query[q] = query[q].replaceFirst("\\s","");
+                        System.out.println(query[q]);
+                    }
+                    if(q==3 && query[q].contains("on")){
+                        query[q]=query[q].replace("on","");
+                        query[q] = query[q].replaceAll("\\s","");
+                        System.out.println(query[q]);
+                    }
                 }
+
+                System.out.println("end..........");
                 listOfQueries.add(query);
             }
 
@@ -80,11 +107,7 @@ public class ReadData {
             }
             System.out.println();
         }
-        //System.out.println(listOfTable.size());
 
     }
-
-
-
 
 }

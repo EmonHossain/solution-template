@@ -12,41 +12,28 @@ import java.util.StringTokenizer;
  */
 public class QueryAnalyzer {
     public List<String> analyzeQuery(String str,String delima){
-        //str.toLowerCase();
-        //str.replaceFirst("select"," ");
+
         List<String> data = new ArrayList<>();
         StringTokenizer tokenizer=null;
-        int flag = 0,i=0;
-        if(delima==null) {
-            tokenizer = new StringTokenizer(str, " ");
-            tokenizer.nextToken();
+        //new
+
+        if(str.equals("*")){
+            data.add("*");
+            return data;
         }
-        else if (delima!=null)
+        else{
             tokenizer = new StringTokenizer(str,delima);
-            //tokenizer.nextToken();
-        while (tokenizer.hasMoreElements()){
-            if(flag==1){
+            System.out.println("token element size : "+tokenizer.countTokens());
+            while (tokenizer.hasMoreElements()){
                 data.add(tokenizer.nextElement().toString());
             }
-            flag=1;
+            for(String value : data)
+                System.out.println( "data : "+value);
+
+            System.out.println( "data analysis finished");
+            return data;
         }
-        return data;
+
     }
-
-
-    /*public String replaceByTableName(String str){
-        System.out.println(str);
-        String[] value = analyzeQuery(str,".");
-        String var=null;
-        try {
-            System.out.println(Solution.findTableNameByShortName.get(value[0].toString()));
-            System.out.println(value[0].toString());
-            var = str.replaceFirst(value[0].toString(),Solution.findTableNameByShortName.get(value[0].toString()));
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return var;
-    }*/
-
 
 }
