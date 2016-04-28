@@ -23,14 +23,11 @@ public class QueryAnalyzer {
         }
         else{
             tokenizer = new StringTokenizer(str,delima);
-            System.out.println("token element size : "+tokenizer.countTokens());
+            //System.out.println("token element size : "+tokenizer.countTokens());
             while (tokenizer.hasMoreElements()){
                 data.add(tokenizer.nextElement().toString());
             }
-            for(String value : data)
-                System.out.println( "data : "+value);
 
-            System.out.println( "data analysis finished");
             return data;
         }
 

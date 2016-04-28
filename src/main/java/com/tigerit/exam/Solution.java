@@ -35,25 +35,22 @@ public class Solution implements Runnable {
 
     @Override
     public void run() {
-        // your application entry point
 
-        // sample input process
-        //String string = readLine();
-
-        //Integer integer = readLineAsInteger();
 
         new ReadData().setDataForTest();
 
         TableNameReplacer replacer = new TableNameReplacer();
+
+
 
         for (int i=0;i<ReadData.listOfQueries.size();i++){
 
             //System.out.println(ReadData.listOfQueries.size());
 
             query = ReadData.listOfQueries.get(i);
-            System.out.println("size of query : "+ReadData.listOfQueries.size());
+            //System.out.println("size of query : "+ReadData.listOfQueries.size());
             List<String> analyzedDataForSelect = queryAnalyzer.analyzeQuery(query[0],",");
-            System.out.println("elements of query select : "+analyzedDataForSelect);
+            //System.out.println("elements of query select : "+analyzedDataForSelect);
 
             List<String> analyzedDataForFrom = queryAnalyzer.analyzeQuery(query[1]," ");
 
@@ -70,7 +67,7 @@ public class Solution implements Runnable {
                 firstTableShortName = analyzedDataForFrom.get(1);
                 findTableNameByShortName.put(firstTableShortName,firstTableName);
 
-                System.out.println(firstTableName+" "+firstTableShortName);
+                //System.out.println(firstTableName+" "+firstTableShortName);
             }
 
 
@@ -82,7 +79,7 @@ public class Solution implements Runnable {
                 secondTableShortName = analyzedDataForJoin.get(1);
                 findTableNameByShortName.put(secondTableShortName,secondTableName);
 
-                System.out.println(secondTableName+" "+secondTableShortName);
+                //System.out.println(secondTableName+" "+secondTableShortName);
             }
 
 
@@ -94,12 +91,7 @@ public class Solution implements Runnable {
                 }
             }
 
-            //print replaced value
-            if(analyzedDataForSelect.size()>1) {
-                for (String str : analyzedDataForSelect) {
-                    System.out.println("replaced select value : " + str);
-                }
-            }
+
 
 
             if (analyzedDataForJoinOn.size()>1 && firstTableShortName!=null){
@@ -110,10 +102,7 @@ public class Solution implements Runnable {
                 }
             }
 
-            //print replaced value
-            for (String str : analyzedDataForJoinOn){
-                System.out.println("replaced join on value : "+str);
-            }
+
 
             ColumnMapper columnMapper = new ColumnMapper();
             columnMapper.mapColumNameWithValue();

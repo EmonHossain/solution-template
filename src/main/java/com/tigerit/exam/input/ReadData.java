@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class ReadData {
 
-    public int testCase = 0;
+    public static int testCase = 0;
     public int tableNumber = 0;
     public String tableName;
     public int numberOfColumn;
@@ -36,6 +36,7 @@ public class ReadData {
 
         testCase = IO.readLineAsInteger();
         for (int i=0;i<testCase;i++){
+            System.out.println("Test: "+testCase);
             tableNumber = IO.readLineAsInteger();
             for (int j=0;j<tableNumber;j++){
                 tableName = IO.readLine();
@@ -70,42 +71,29 @@ public class ReadData {
                     if(q==0 && query[q].contains("select")){
                         query[q] = query[q].replace("select","");
                         query[q] = query[q].replaceAll("\\s","");
-                        System.out.println(query[q]);
+                        //System.out.println(query[q]);
                     }
                     if(q==1 && query[q].contains("from")){
                         query[q]=query[q].replace("from","");
                         query[q] = query[q].replaceFirst("\\s","");
-                        System.out.println(query[q]);
+                        //System.out.println(query[q]);
                     }
                     if(q==2 && query[q].contains("join")){
                         query[q]=query[q].replace("join","");
                         query[q] = query[q].replaceFirst("\\s","");
-                        System.out.println(query[q]);
+                        //System.out.println(query[q]);
                     }
                     if(q==3 && query[q].contains("on")){
                         query[q]=query[q].replace("on","");
                         query[q] = query[q].replaceAll("\\s","");
-                        System.out.println(query[q]);
+                        //System.out.println(query[q]);
                     }
                 }
 
-                System.out.println("end..........");
+                //System.out.println("end..........");
                 listOfQueries.add(query);
             }
 
-        }
-
-
-
-
-
-        int[][] tab = tablesName.get("table_a");
-
-        for(int i = 0;i<(int)numberOfRecordFortable.get("table_a");i++){
-            for(int k=0;k<(int)numberOfColumnFortable.get("table_a");k++){
-                System.out.print(tab[i][k]+ " ");
-            }
-            System.out.println();
         }
 
     }
